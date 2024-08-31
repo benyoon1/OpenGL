@@ -24,6 +24,9 @@ public:
         std::string fullVertexPath = (srcDir / vertexPath).string();
         std::string fullFragmentPath = (srcDir / fragmentPath).string();
 
+        //std::cout << "Vertex path: " << fullVertexPath << std::endl;
+        //std::cout << "Fragment path: " << fullFragmentPath << std::endl;
+
         // 1. retrieve the vertex/fragment source code from filePath
         std::string vertexCode;
         std::string fragmentCode;

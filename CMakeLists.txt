@@ -1,23 +1,33 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.27)
 project(learnopengl)
 
 set(CMAKE_CXX_STANDARD 23)
 
-set(GLFW_DIR "/home/byoon/CLionProjects/learnopengl")
+set(GL_DEPS "$ENV{HOME}/dependencies")
 
-include_directories(${GLFW_DIR}/include)
+include_directories(${GL_DEPS}/include ${CMAKE_SOURCE_DIR}/include /opt/homebrew/include ${GL_DEPS}/glad/include)
 
-link_directories(${GLFW_DIR}/libs)
+link_directories(${GL_DEPS}/libs)
 
 add_executable(learnopengl src/main.cpp
-        src/glad.c)
+                ${GL_DEPS}/glad/src/glad.c)
 
-target_link_libraries(learnopengl
-        ${GLFW_DIR}/libs/libglfw3.a
-        GL
-        X11
-        pthread
-        Xrandr
-        Xi
-        dl
+if(APPLE)
+        target_link_libraries(learnopengl
+                ${GL_DEPS}/libs/libglfw3.a
+                "-framework OpenGL"
+                "-framework Cocoa"
+                "-framework IOKit"
+                "-framework CoreVideo"
 )
+elseif(UNIX AND NOT APPLE)
+        target_link_libraries(learnopengl
+                ${GL_DEPS}/libs/libglfw3.a
+                GL
+                X11
+                pthread
+                Xrandr
+                Xi
+                dl
+        )
+endif()
