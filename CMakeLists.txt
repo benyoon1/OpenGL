@@ -3,7 +3,7 @@ project(learnopengl)
 
 set(CMAKE_CXX_STANDARD 23)
 
-set(GL_DEPS "$ENV{HOME}/dependencies")
+set(GL_DEPS "${CMAKE_SOURCE_DIR}/dependencies")
 
 include_directories(${GL_DEPS}/include ${CMAKE_SOURCE_DIR}/include /opt/homebrew/include ${GL_DEPS}/glad/include)
 
