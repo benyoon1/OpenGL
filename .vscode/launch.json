@@ -14,7 +14,11 @@
       "cwd": "${fileDirname}",
       "environment": [],
       "externalConsole": false,
-      "MIMode": "lldb"
+      "MIMode": "lldb",
+      "preLaunchTask": "build",
+      "logging": {
+        "engineLogging": true
+      }
     }
   ]
 }

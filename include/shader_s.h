@@ -20,6 +20,13 @@ public:
         std::filesystem::path parentDir = currentDir.parent_path();
         std::filesystem::path srcDir = parentDir / "src";
 
+            const char* workspaceFolder = std::getenv("WORKSPACE_FOLDER");
+    if (workspaceFolder) {
+        std::cout << "Workspace Folder: " << workspaceFolder << std::endl;
+    } else {
+        std::cerr << "WORKSPACE_FOLDER environment variable is not set." << std::endl;
+    }
+
         // Construct full paths
         std::string fullVertexPath = (srcDir / vertexPath).string();
         std::string fullFragmentPath = (srcDir / fragmentPath).string();
