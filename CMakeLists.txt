@@ -9,6 +9,9 @@ include_directories(${GL_DEPS}/include ${CMAKE_SOURCE_DIR}/include /opt/homebrew
 
 link_directories(${GL_DEPS}/libs)
 
+configure_file(configuration/root_directory.h.in configuration/root_directory.h)
+include_directories(${CMAKE_BINARY_DIR}/configuration)
+
 add_executable(learnopengl src/main.cpp
                 ${GL_DEPS}/glad/src/glad.c
                 src/stb_image.cpp)

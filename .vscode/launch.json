@@ -15,10 +15,10 @@
       "environment": [],
       "externalConsole": false,
       "MIMode": "lldb",
-      "preLaunchTask": "build",
-      "logging": {
-        "engineLogging": true
-      }
+      "preLaunchTask": "build"
+      //   "logging": {
+      //     "engineLogging": true
+      //   }
     }
   ]
 }
