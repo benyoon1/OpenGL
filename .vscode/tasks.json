@@ -2,8 +2,30 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "build",
       "type": "shell",
+      "label": "cmake configure",
+      "command": "/opt/homebrew/bin/cmake",
+      "args": [
+        "-DCMAKE_BUILD_TYPE:STRING=Debug",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE",
+        "-DCMAKE_C_COMPILER:FILEPATH=/usr/bin/clang",
+        "-DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/clang++",
+        "--no-warn-unused-cli",
+        "-S${workspaceFolder}",
+        "-B${workspaceFolder}/build",
+        "-G",
+        "Ninja"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": "build",
+      "detail": "CMake configure task"
+    },
+    {
+      "type": "shell",
+      "label": "cmake build",
       "command": "/opt/homebrew/bin/cmake",
       "args": [
         "--build",
@@ -12,15 +34,24 @@
         "Debug",
         "--target",
         "all",
-        "-j",
-        "10",
         "--"
       ],
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": "build",
+      "detail": "CMake build task"
+    },
+    {
+      "label": "build",
+      "dependsOn": ["cmake configure", "cmake build"],
+      "dependsOrder": "sequence",
       "group": {
         "kind": "build",
         "isDefault": true
       },
-      "problemMatcher": ["$gcc"]
+      "detail": "Full build process: configure and build"
     }
   ]
 }
