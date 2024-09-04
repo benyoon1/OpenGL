@@ -6,7 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <shader_s.h>
+#include <shader.h>
 #include <camera.h>
 #include <filesystem.h>
 
@@ -75,7 +75,7 @@ int main()
 
     // build and compile our shader zprogram
     // ------------------------------------
-    Shader ourShader(FileSystem::getPath("src/4.1.texture.vs").c_str(), FileSystem::getPath("src/4.1.texture.fs").c_str());
+    Shader ourShader(FileSystem::getPath("src/texture.vs").c_str(), FileSystem::getPath("src/texture.fs").c_str());
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
