@@ -2,7 +2,7 @@
 
 ## Little Preview
 
-![Cube demo](assets/cube-demo.gif)
+![Cube demo](assets/city-demo.gif)
 
 ## Setup
 
