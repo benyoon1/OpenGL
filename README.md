@@ -1,8 +1,10 @@
 # OpenGL
 
-## Little preview as of September 8
+## Little Preview
 
-![Cube demo](assets/cube-demo.gif)
+![Cube demo](assets/city-demo.gif)
+
+## Setup
 
 1. Place GLAD files with your machine's compatible OpenGL version from http://glad.dav1d.de/ in /dependencies folder.
 2. For MacOS, install GLFW with homebrew.

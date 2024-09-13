@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.27)
 project(learnopengl)
 
+# Find the Assimp package
+find_package(assimp REQUIRED)
+
+# Print include directories and libraries for debugging
+message(STATUS "Assimp include directories: ${assimp_INCLUDE_DIRS}")
+message(STATUS "Assimp libraries: ${assimp_LIBRARIES}")
+
 set(CMAKE_CXX_STANDARD 23)
 
 set(GL_DEPS "${CMAKE_SOURCE_DIR}/dependencies")
@@ -8,6 +15,7 @@ set(GL_DEPS "${CMAKE_SOURCE_DIR}/dependencies")
 include_directories(${GL_DEPS}/include ${CMAKE_SOURCE_DIR}/include ${CMAKE_BINARY_DIR}/configuration ${GL_DEPS}/glad/include)
 if (APPLE) 
 include_directories(/opt/homebrew/include)
+include_directories(/opt/homebrew/Cellar/assimp/5.4.3/include)
 endif()
 
 link_directories(${GL_DEPS}/libs)
@@ -23,6 +31,7 @@ add_executable(learnopengl ${SRC_FILES} ${GL_DEPS}/glad/src/glad.c)
 if(APPLE)
         target_link_libraries(learnopengl
                 ${GL_DEPS}/libs/libglfw3.a
+                /opt/homebrew/Cellar/assimp/5.4.3/lib/libassimp.dylib
                 "-framework OpenGL"
                 "-framework Cocoa"
                 "-framework IOKit"
