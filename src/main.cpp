@@ -85,7 +85,7 @@ int main()
 
     // load models
     // -----------
-    Model ourModel(FileSystem::getPath("assets/gm-bigcity/gm_bigcity.obj"));
+    Model ourModel(FileSystem::getPath("assets/f22/F22.obj"));
 
     float skyboxVertices[] = {
         // positions

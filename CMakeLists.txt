@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.27)
-project(learnopengl)
+project(opengl)
 
 # Find the Assimp package
 find_package(assimp REQUIRED)
@@ -26,10 +26,10 @@ configure_file(configuration/root_directory.h.in configuration/root_directory.h)
 file(GLOB SRC_FILES src/*.cpp)
 
 # Add executable
-add_executable(learnopengl ${SRC_FILES} ${GL_DEPS}/glad/src/glad.c)
+add_executable(opengl ${SRC_FILES} ${GL_DEPS}/glad/src/glad.c)
 
 if(APPLE)
-        target_link_libraries(learnopengl
+        target_link_libraries(opengl
                 ${GL_DEPS}/libs/libglfw3.a
                 /opt/homebrew/Cellar/assimp/5.4.3/lib/libassimp.dylib
                 "-framework OpenGL"
@@ -38,7 +38,7 @@ if(APPLE)
                 "-framework CoreVideo"
 )
 elseif(UNIX AND NOT APPLE)
-        target_link_libraries(learnopengl
+        target_link_libraries(opengl
                 ${GL_DEPS}/libs/libglfw3.a
                 GL
                 X11
