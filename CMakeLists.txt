@@ -3,10 +3,23 @@ project(opengl)
 
 # Find the Assimp package
 find_package(assimp REQUIRED)
+find_package(glfw3 REQUIRED)
 
 # Print include directories and libraries for debugging
 message(STATUS "Assimp include directories: ${assimp_INCLUDE_DIRS}")
 message(STATUS "Assimp libraries: ${assimp_LIBRARIES}")
+
+if(glfw3_FOUND)
+    message(STATUS "GLFW found")
+else()
+    message(FATAL_ERROR "GLFW not found")
+endif()
+
+if(assimp_FOUND)
+    message(STATUS "Assimp found")
+else()
+    message(FATAL_ERROR "Assimp not found")
+endif()
 
 set(CMAKE_CXX_STANDARD 23)
 
@@ -39,7 +52,8 @@ if(APPLE)
 )
 elseif(UNIX AND NOT APPLE)
         target_link_libraries(opengl
-                ${GL_DEPS}/libs/libglfw3.a
+                glfw
+                assimp::assimp
                 GL
                 X11
                 pthread
@@ -48,3 +62,4 @@ elseif(UNIX AND NOT APPLE)
                 dl
         )
 endif()
+
