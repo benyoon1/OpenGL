@@ -34,7 +34,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 // lighting
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+glm::vec3 lightPos(50.0f, 300.0f, 2.0f);
 
 int main()
 {
@@ -223,12 +223,18 @@ int main()
     stbi_set_flip_vertically_on_load(false);
 
     vector<std::string> faces{
-        FileSystem::getPath("assets/skybox/right.jpg"),
-        FileSystem::getPath("assets/skybox/left.jpg"),
-        FileSystem::getPath("assets/skybox/top.jpg"),
-        FileSystem::getPath("assets/skybox/bottom.jpg"),
-        FileSystem::getPath("assets/skybox/front.jpg"),
-        FileSystem::getPath("assets/skybox/back.jpg")};
+        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_right.png"),
+        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_left.png"),
+        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_up.png"),
+        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_down.png"),
+        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_front.png"),
+        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_back.png")};
+    // FileSystem::getPath("assets/skybox/right.jpg"),
+    // FileSystem::getPath("assets/skybox/left.jpg"),
+    // FileSystem::getPath("assets/skybox/top.jpg"),
+    // FileSystem::getPath("assets/skybox/bottom.jpg"),
+    // FileSystem::getPath("assets/skybox/front.jpg"),
+    // FileSystem::getPath("assets/skybox/back.jpg")};
     unsigned int cubemapTexture = loadCubemap(faces);
 
     skyboxShader.use();
@@ -253,8 +259,22 @@ int main()
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // Get the current time
+        float timeValue = glfwGetTime();
+
+        // Calculate the displacement using a sine function
+        float displacement = sin(timeValue) * 500.0f; // amplitude is a float value defining the range of displacement
+
+        // Modify the light position with the displacement
+        glm::vec3 animatedLightPos = lightPos + glm::vec3(displacement, 0.0f, 0.0f); // Displace along the x-axis
+
         // don't forget to enable shader before setting uniforms
         ourShader.use();
+
+        ourShader.setVec3("lightPos", animatedLightPos);
+        ourShader.setVec3("viewPos", camera.Position);
+        ourShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        ourShader.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 5000.0f);
@@ -288,8 +308,11 @@ int main()
         lightCubeShader.setMat4("projection", projection);
         lightCubeShader.setMat4("view", view);
         model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(0.7f)); // a smaller cube
+
+        // Apply the translation
+        model = glm::translate(model, animatedLightPos);
+
+        model = glm::scale(model, glm::vec3(0.01f));
         lightCubeShader.setMat4("model", model);
 
         glBindVertexArray(lightCubeVAO);
