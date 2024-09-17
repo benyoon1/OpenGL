@@ -22,6 +22,7 @@ unsigned int loadCubemap(vector<std::string> faces);
 // settings
 const unsigned int SCR_WIDTH = 1920;
 const unsigned int SCR_HEIGHT = 1080;
+const float AMPLITUDE = 600.0f;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -32,6 +33,9 @@ bool firstMouse = true;
 // timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
+
+// lighting
+glm::vec3 lightPos(0.0f, 150.0f, 0.0f);
 
 int main()
 {
@@ -77,6 +81,69 @@ int main()
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
+
+    // build and compile our shader zprogram
+    // ------------------------------------
+    Shader lightingShader(FileSystem::getPath("src/cube.vs").c_str(), FileSystem::getPath("src/cube.fs").c_str());
+    Shader lightCubeShader(FileSystem::getPath("src/light_cube.vs").c_str(), FileSystem::getPath("src/light_cube.fs").c_str());
+
+    // set up vertex data (and buffer(s)) and configure vertex attributes
+    // ------------------------------------------------------------------
+    float vertices[] = {
+        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+        0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+        0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+        -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+
+        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+        0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+        0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+        0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+        -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+
+        -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+        -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+        -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+
+        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+        0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+        0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+        0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+        0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+        -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+
+        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+        0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f};
+
+    unsigned int VBO;
+    glGenBuffers(1, &VBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    unsigned int lightCubeVAO;
+    glGenVertexArrays(1, &lightCubeVAO);
+    glBindVertexArray(lightCubeVAO);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
 
     // build and compile shaders
     // -------------------------
@@ -144,12 +211,18 @@ int main()
     stbi_set_flip_vertically_on_load(false);
 
     vector<std::string> faces{
-        FileSystem::getPath("assets/skybox/right.jpg"),
-        FileSystem::getPath("assets/skybox/left.jpg"),
-        FileSystem::getPath("assets/skybox/top.jpg"),
-        FileSystem::getPath("assets/skybox/bottom.jpg"),
-        FileSystem::getPath("assets/skybox/front.jpg"),
-        FileSystem::getPath("assets/skybox/back.jpg")};
+        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_right.png"),
+        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_left.png"),
+        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_up.png"),
+        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_down.png"),
+        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_front.png"),
+        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_back.png")};
+    // FileSystem::getPath("assets/skybox/right.jpg"),
+    // FileSystem::getPath("assets/skybox/left.jpg"),
+    // FileSystem::getPath("assets/skybox/top.jpg"),
+    // FileSystem::getPath("assets/skybox/bottom.jpg"),
+    // FileSystem::getPath("assets/skybox/front.jpg"),
+    // FileSystem::getPath("assets/skybox/back.jpg")};
     unsigned int cubemapTexture = loadCubemap(faces);
 
     skyboxShader.use();
@@ -174,8 +247,19 @@ int main()
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // don't forget to enable shader before setting uniforms
+        float timeValue = glfwGetTime();
+        float Xdisplacement = sin(timeValue) * AMPLITUDE;
+        float Ydisplacement = cos(timeValue) * AMPLITUDE;
+
+        // Displace along the xy-axis
+        glm::vec3 animatedLightPos = lightPos + glm::vec3(Xdisplacement, Ydisplacement, 0.0f);
+
         ourShader.use();
+
+        ourShader.setVec3("lightPos", animatedLightPos);
+        ourShader.setVec3("viewPos", camera.Position);
+        ourShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        ourShader.setVec3("objectColor", glm::vec3(1.0f, 0.61f, 0.45f));
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 5000.0f);
@@ -185,10 +269,25 @@ int main()
 
         // render the loaded model
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));     // it's a bit too big for our scene, so scale it down
+        model = glm::translate(model, glm::vec3(0.0f, -100.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
         ourShader.setMat4("model", model);
         ourModel.Draw(ourShader);
+
+        // also draw the lamp object
+        lightCubeShader.use();
+        lightCubeShader.setMat4("projection", projection);
+        lightCubeShader.setMat4("view", view);
+        model = glm::mat4(1.0f);
+
+        // Apply the translation
+        model = glm::translate(model, animatedLightPos);
+
+        model = glm::scale(model, glm::vec3(0.01f));
+        lightCubeShader.setMat4("model", model);
+
+        glBindVertexArray(lightCubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // draw skybox as last
         glDepthFunc(GL_LEQUAL); // change depth function so depth test passes when values are equal to depth buffer's content

@@ -1,12 +1,21 @@
-# OpenGL
+# 3D Model Viewer with OpenGL
 
 ## Little Preview
 
-![Cube demo](assets/city-demo.gif)
+### Lighting effects with rotating lamp and orange tint
+
+![Cube demo](assets/gifs/city-light-demo.gif)
+<br>
+<br>
+
+### Model loaded without lighting effect
+
+![Cube demo](assets/gifs/city-demo.gif)
 
 ## Setup
 
-1. Place GLAD files with your machine's compatible OpenGL version from http://glad.dav1d.de/ in /dependencies folder.
-2. For MacOS, install GLFW with homebrew.
-3. Compile GLFW project from http://www.glfw.org/download.html and place libglfw3.a in /dependencies/libs.
-4. Copy glfw3.h from GLFW project and place it in /dependencies/include.
+### For MacOS
+
+1. Install GLFW and Assimp with homebrew.
+2. Build and run the "opengl" executable.
+3. (Optional) Place GLAD files with your machine's compatible OpenGL version from http://glad.dav1d.de/ in /dependencies folder.

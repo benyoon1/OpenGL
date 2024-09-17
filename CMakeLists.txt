@@ -1,12 +1,25 @@
 cmake_minimum_required(VERSION 3.27)
-project(learnopengl)
+project(opengl)
 
 # Find the Assimp package
 find_package(assimp REQUIRED)
+find_package(glfw3 REQUIRED)
 
 # Print include directories and libraries for debugging
 message(STATUS "Assimp include directories: ${assimp_INCLUDE_DIRS}")
 message(STATUS "Assimp libraries: ${assimp_LIBRARIES}")
+
+if(glfw3_FOUND)
+    message(STATUS "GLFW found")
+else()
+    message(FATAL_ERROR "GLFW not found")
+endif()
+
+if(assimp_FOUND)
+    message(STATUS "Assimp found")
+else()
+    message(FATAL_ERROR "Assimp not found")
+endif()
 
 set(CMAKE_CXX_STANDARD 23)
 
@@ -26,10 +39,10 @@ configure_file(configuration/root_directory.h.in configuration/root_directory.h)
 file(GLOB SRC_FILES src/*.cpp)
 
 # Add executable
-add_executable(learnopengl ${SRC_FILES} ${GL_DEPS}/glad/src/glad.c)
+add_executable(opengl ${SRC_FILES} ${GL_DEPS}/glad/src/glad.c)
 
 if(APPLE)
-        target_link_libraries(learnopengl
+        target_link_libraries(opengl
                 ${GL_DEPS}/libs/libglfw3.a
                 /opt/homebrew/Cellar/assimp/5.4.3/lib/libassimp.dylib
                 "-framework OpenGL"
@@ -38,8 +51,9 @@ if(APPLE)
                 "-framework CoreVideo"
 )
 elseif(UNIX AND NOT APPLE)
-        target_link_libraries(learnopengl
-                ${GL_DEPS}/libs/libglfw3.a
+        target_link_libraries(opengl
+                glfw
+                assimp::assimp
                 GL
                 X11
                 pthread
@@ -48,3 +62,4 @@ elseif(UNIX AND NOT APPLE)
                 dl
         )
 endif()
+
