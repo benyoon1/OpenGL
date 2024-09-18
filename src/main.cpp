@@ -210,19 +210,34 @@ int main()
 
     stbi_set_flip_vertically_on_load(false);
 
+    // loads a cubemap texture from 6 individual texture faces
+    // order:
+    // +X (right)
+    // -X (left)
+    // +Y (top)
+    // -Y (bottom)
+    // +Z (front)
+    // -Z (back)
     vector<std::string> faces{
-        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_right.png"),
-        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_left.png"),
-        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_up.png"),
-        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_down.png"),
-        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_front.png"),
-        FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_back.png")};
-    // FileSystem::getPath("assets/skybox/right.jpg"),
-    // FileSystem::getPath("assets/skybox/left.jpg"),
-    // FileSystem::getPath("assets/skybox/top.jpg"),
-    // FileSystem::getPath("assets/skybox/bottom.jpg"),
-    // FileSystem::getPath("assets/skybox/front.jpg"),
-    // FileSystem::getPath("assets/skybox/back.jpg")};
+        // FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_right.png"),
+        // FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_left.png"),
+        // FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_up.png"),
+        // FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_down.png"),
+        // FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_front.png"),
+        // FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_back.png")};
+        // FileSystem::getPath("assets/skybox/right.jpg"),
+        // FileSystem::getPath("assets/skybox/left.jpg"),
+        // FileSystem::getPath("assets/skybox/top.jpg"),
+        // FileSystem::getPath("assets/skybox/bottom.jpg"),
+        // FileSystem::getPath("assets/skybox/front.jpg"),
+        // FileSystem::getPath("assets/skybox/back.jpg")};
+        FileSystem::getPath("assets/sunset/px.png"),
+        FileSystem::getPath("assets/sunset/nx.png"),
+        FileSystem::getPath("assets/sunset/py.png"),
+        FileSystem::getPath("assets/sunset/ny.png"),
+        FileSystem::getPath("assets/sunset/pz.png"),
+        FileSystem::getPath("assets/sunset/nz.png")};
+
     unsigned int cubemapTexture = loadCubemap(faces);
 
     skyboxShader.use();
@@ -238,9 +253,7 @@ int main()
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        // input
-        // -----
-        processInput(window);
+                processInput(window);
 
         // render
         // ------
@@ -248,11 +261,11 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         float timeValue = glfwGetTime();
-        float Xdisplacement = sin(timeValue) * AMPLITUDE;
+        float Zdisplacement = sin(timeValue) * AMPLITUDE;
         float Ydisplacement = cos(timeValue) * AMPLITUDE;
 
-        // Displace along the xy-axis
-        glm::vec3 animatedLightPos = lightPos + glm::vec3(Xdisplacement, Ydisplacement, 0.0f);
+        // Displace along the x-axis
+        glm::vec3 animatedLightPos = lightPos + glm::vec3(0.0f, Ydisplacement, Zdisplacement);
 
         ourShader.use();
 
@@ -309,8 +322,6 @@ int main()
         glfwPollEvents();
     }
 
-    // glfw: terminate, clearing all previously allocated GLFW resources.
-    // ------------------------------------------------------------------
     glfwTerminate();
     return 0;
 }
