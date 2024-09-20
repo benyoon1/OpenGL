@@ -3,16 +3,29 @@
   "tasks": [
     {
       "type": "shell",
+      "label": "cmake clean",
+      "command": "/opt/homebrew/bin/cmake",
+      "args": ["--build", "${workspaceFolder}/build", "--target", "clean"],
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": "build",
+      "detail": "CMake clean task"
+    },
+    {
+      "type": "shell",
       "label": "cmake configure",
       "command": "/opt/homebrew/bin/cmake",
       "args": [
-        "-DCMAKE_BUILD_TYPE:STRING=Debug",
-        "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE",
-        "-DCMAKE_C_COMPILER:FILEPATH=/usr/bin/clang",
-        "-DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/clang++",
-        "--no-warn-unused-cli",
-        "-S${workspaceFolder}",
-        "-B${workspaceFolder}/build",
+        "-DCMAKE_BUILD_TYPE=Debug",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE",
+        "-DCMAKE_C_COMPILER=/usr/bin/clang",
+        "-DCMAKE_CXX_COMPILER=/usr/bin/clang++",
+        "-S",
+        "${workspaceFolder}",
+        "-B",
+        "${workspaceFolder}/build",
         "-G",
         "Ninja"
       ],
@@ -33,8 +46,7 @@
         "--config",
         "Debug",
         "--target",
-        "all",
-        "--"
+        "all"
       ],
       "options": {
         "cwd": "${workspaceFolder}/build"
@@ -45,13 +57,13 @@
     },
     {
       "label": "build",
-      "dependsOn": ["cmake configure", "cmake build"],
+      "dependsOn": ["cmake clean", "cmake configure", "cmake build"],
       "dependsOrder": "sequence",
       "group": {
         "kind": "build",
         "isDefault": true
       },
-      "detail": "Full build process: configure and build"
+      "detail": "Full build process: clean, configure, and build"
     }
   ]
 }

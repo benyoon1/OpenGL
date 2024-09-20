@@ -1,5 +1,4 @@
 #include <shader.h>
-#include <filesystem.h>
 
 #include <fstream>
 #include <sstream>

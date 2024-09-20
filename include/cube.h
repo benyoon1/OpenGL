@@ -1,7 +1,9 @@
 #ifndef BOX_H
 #define BOX_H
 
-const float vertices[] = {
+#include <glad/glad.h>
+
+static const float cubeVertices[] = {
     // positions
     -1.0f, 1.0f, -1.0f,
     -1.0f, -1.0f, -1.0f,
@@ -45,10 +47,12 @@ const float vertices[] = {
     -1.0f, -1.0f, 1.0f,
     1.0f, -1.0f, 1.0f};
 
-class Box
+class Cube
 {
 public:
-    Box() = default;
+    unsigned int cubeVBO, cubeVAO;
+
+    Cube();
 };
 
 #endif

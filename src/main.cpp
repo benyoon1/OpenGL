@@ -10,6 +10,7 @@
 #include <camera.h>
 #include <model.h>
 #include <filesystem.h>
+#include <cube.h>
 
 #include <iostream>
 
@@ -25,7 +26,7 @@ const unsigned int SCR_HEIGHT = 1080;
 const float AMPLITUDE = 600.0f;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 200.0f, 0.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -82,8 +83,14 @@ int main()
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
 
-    // build and compile our shader zprogram
-    // ------------------------------------
+    // load models
+    // -----------
+    Model ourModel("assets/gm-bigcity/gm_bigcity.obj");
+
+    // build and compile shaders
+    // -------------------------
+    Shader modelShader("shaders/model_loading.vs", "shaders/model_loading.fs");
+    Shader skyboxShader("shaders/skybox.vs", "shaders/skybox.fs");
     Shader lightCubeShader("shaders/light_cube.vs", "shaders/light_cube.fs");
 
     float boxVertices[] = {
@@ -130,38 +137,22 @@ int main()
         -1.0f, -1.0f, 1.0f,
         1.0f, -1.0f, 1.0f};
 
-    // load models
-    // -----------
-    Model ourModel("assets/gm-bigcity/gm_bigcity.obj");
-
-    // build and compile shaders
-    // -------------------------
-    Shader modelShader("shaders/model_loading.vs", "shaders/model_loading.fs");
-    Shader skyboxShader("shaders/skybox.vs", "shaders/skybox.fs");
-
-    // Box lightBox();
+    Cube lampCube;
 
     unsigned int boxVBO;
     glGenBuffers(1, &boxVBO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, boxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(boxVertices), boxVertices, GL_STATIC_DRAW);
-
-    unsigned int lightCubeVAO;
-    glGenVertexArrays(1, &lightCubeVAO);
-    glBindVertexArray(lightCubeVAO);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(0);
-
     // skybox VAO
     unsigned int skyboxVAO;
-    glGenVertexArrays(1, &skyboxVAO);
-    glBindVertexArray(skyboxVAO);
+
     glBindBuffer(GL_ARRAY_BUFFER, boxVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(boxVertices), &boxVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
+
+    glGenVertexArrays(1, &skyboxVAO);
+    glBindVertexArray(skyboxVAO);
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
 
     stbi_set_flip_vertically_on_load(false);
 
@@ -241,7 +232,7 @@ int main()
         model = glm::scale(model, glm::vec3(0.01f));
         lightCubeShader.setMat4("model", model);
 
-        glBindVertexArray(lightCubeVAO);
+        glBindVertexArray(lampCube.cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // draw skybox as last
