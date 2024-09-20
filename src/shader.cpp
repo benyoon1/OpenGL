@@ -1,4 +1,5 @@
-#include "shader.h"
+#include <shader.h>
+#include <filesystem.h>
 
 #include <fstream>
 #include <sstream>
@@ -17,8 +18,8 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath)
     try
     {
         // open files
-        vShaderFile.open(vertexPath);
-        fShaderFile.open(fragmentPath);
+        vShaderFile.open(FileSystem::getPath(vertexPath).c_str());
+        fShaderFile.open(FileSystem::getPath(fragmentPath).c_str());
         std::stringstream vShaderStream, fShaderStream;
         // read file's buffer contents into streams
         vShaderStream << vShaderFile.rdbuf();

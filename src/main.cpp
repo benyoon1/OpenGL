@@ -84,7 +84,7 @@ int main()
 
     // build and compile our shader zprogram
     // ------------------------------------
-    Shader lightCubeShader(FileSystem::getPath("src/light_cube.vs").c_str(), FileSystem::getPath("src/light_cube.fs").c_str());
+    Shader lightCubeShader("shaders/light_cube.vs", "shaders/light_cube.fs");
 
     float boxVertices[] = {
         // positions
@@ -132,12 +132,12 @@ int main()
 
     // load models
     // -----------
-    Model ourModel(FileSystem::getPath("assets/gm-bigcity/gm_bigcity.obj"));
+    Model ourModel("assets/gm-bigcity/gm_bigcity.obj");
 
     // build and compile shaders
     // -------------------------
-    Shader modelShader(FileSystem::getPath("src/model_loading.vs").c_str(), FileSystem::getPath("src/model_loading.fs").c_str());
-    Shader skyboxShader(FileSystem::getPath("src/skybox.vs").c_str(), FileSystem::getPath("src/skybox.fs").c_str());
+    Shader modelShader("shaders/model_loading.vs", "shaders/model_loading.fs");
+    Shader skyboxShader("shaders/skybox.vs", "shaders/skybox.fs");
 
     // Box lightBox();
 
@@ -174,12 +174,12 @@ int main()
     // +Z (front)
     // -Z (back)
     vector<std::string> faces{
-        FileSystem::getPath("assets/sunset/px.png"),
-        FileSystem::getPath("assets/sunset/nx.png"),
-        FileSystem::getPath("assets/sunset/py.png"),
-        FileSystem::getPath("assets/sunset/ny.png"),
-        FileSystem::getPath("assets/sunset/pz.png"),
-        FileSystem::getPath("assets/sunset/nz.png")};
+        "assets/sunset/px.png",
+        "assets/sunset/nx.png",
+        "assets/sunset/py.png",
+        "assets/sunset/ny.png",
+        "assets/sunset/pz.png",
+        "assets/sunset/nz.png"};
 
     unsigned int cubemapTexture = loadCubemap(faces);
 
@@ -335,14 +335,21 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 // -------------------------------------------------------
 unsigned int loadCubemap(vector<std::string> faces)
 {
+    vector<std::string> facesAbsPath(6);
+    for (int i = 0; i < 6; i++)
+    {
+        facesAbsPath[i] = FileSystem::getPath(faces[i]);
+        std::cout << "facesAbsPath" << facesAbsPath[i] << std::endl;
+    }
+
     unsigned int textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
     int width, height, nrChannels;
-    for (unsigned int i = 0; i < faces.size(); i++)
+    for (unsigned int i = 0; i < facesAbsPath.size(); i++)
     {
-        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        unsigned char *data = stbi_load(facesAbsPath[i].c_str(), &width, &height, &nrChannels, 0);
         if (data)
         {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -350,7 +357,7 @@ unsigned int loadCubemap(vector<std::string> faces)
         }
         else
         {
-            std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+            std::cout << "Cubemap texture failed to load at path: " << facesAbsPath[i] << std::endl;
             stbi_image_free(data);
         }
     }
