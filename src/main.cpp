@@ -84,77 +84,9 @@ int main()
 
     // build and compile our shader zprogram
     // ------------------------------------
-    Shader lightingShader(FileSystem::getPath("src/cube.vs").c_str(), FileSystem::getPath("src/cube.fs").c_str());
     Shader lightCubeShader(FileSystem::getPath("src/light_cube.vs").c_str(), FileSystem::getPath("src/light_cube.fs").c_str());
 
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
-    float vertices[] = {
-        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-        0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-        0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-        0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-        -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-
-        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-        0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-        0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-        -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-
-        -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
-        -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
-        -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
-
-        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-        0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-
-        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
-        0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
-        0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
-        0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
-        -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
-
-        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-        -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f};
-
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    unsigned int lightCubeVAO;
-    glGenVertexArrays(1, &lightCubeVAO);
-    glBindVertexArray(lightCubeVAO);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(0);
-
-    // build and compile shaders
-    // -------------------------
-    Shader ourShader(FileSystem::getPath("src/model_loading.vs").c_str(), FileSystem::getPath("src/model_loading.fs").c_str());
-    Shader skyboxShader(FileSystem::getPath("src/skybox.vs").c_str(), FileSystem::getPath("src/skybox.fs").c_str());
-
-    // load models
-    // -----------
-    Model ourModel(FileSystem::getPath("assets/gm-bigcity/gm_bigcity.obj"));
-
-    float skyboxVertices[] = {
+    float boxVertices[] = {
         // positions
         -1.0f, 1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,
@@ -198,13 +130,36 @@ int main()
         -1.0f, -1.0f, 1.0f,
         1.0f, -1.0f, 1.0f};
 
+    // load models
+    // -----------
+    Model ourModel(FileSystem::getPath("assets/gm-bigcity/gm_bigcity.obj"));
+
+    // build and compile shaders
+    // -------------------------
+    Shader modelShader(FileSystem::getPath("src/model_loading.vs").c_str(), FileSystem::getPath("src/model_loading.fs").c_str());
+    Shader skyboxShader(FileSystem::getPath("src/skybox.vs").c_str(), FileSystem::getPath("src/skybox.fs").c_str());
+
+    // Box lightBox();
+
+    unsigned int boxVBO;
+    glGenBuffers(1, &boxVBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, boxVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(boxVertices), boxVertices, GL_STATIC_DRAW);
+
+    unsigned int lightCubeVAO;
+    glGenVertexArrays(1, &lightCubeVAO);
+    glBindVertexArray(lightCubeVAO);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
+
     // skybox VAO
-    unsigned int skyboxVAO, skyboxVBO;
+    unsigned int skyboxVAO;
     glGenVertexArrays(1, &skyboxVAO);
-    glGenBuffers(1, &skyboxVBO);
     glBindVertexArray(skyboxVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, boxVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(boxVertices), &boxVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
 
@@ -219,18 +174,6 @@ int main()
     // +Z (front)
     // -Z (back)
     vector<std::string> faces{
-        // FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_right.png"),
-        // FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_left.png"),
-        // FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_up.png"),
-        // FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_down.png"),
-        // FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_front.png"),
-        // FileSystem::getPath("assets/apocalypse/vz_apocalypse_ocean_back.png")};
-        // FileSystem::getPath("assets/skybox/right.jpg"),
-        // FileSystem::getPath("assets/skybox/left.jpg"),
-        // FileSystem::getPath("assets/skybox/top.jpg"),
-        // FileSystem::getPath("assets/skybox/bottom.jpg"),
-        // FileSystem::getPath("assets/skybox/front.jpg"),
-        // FileSystem::getPath("assets/skybox/back.jpg")};
         FileSystem::getPath("assets/sunset/px.png"),
         FileSystem::getPath("assets/sunset/nx.png"),
         FileSystem::getPath("assets/sunset/py.png"),
@@ -253,7 +196,7 @@ int main()
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-                processInput(window);
+        processInput(window);
 
         // render
         // ------
@@ -267,25 +210,25 @@ int main()
         // Displace along the x-axis
         glm::vec3 animatedLightPos = lightPos + glm::vec3(0.0f, Ydisplacement, Zdisplacement);
 
-        ourShader.use();
+        modelShader.use();
 
-        ourShader.setVec3("lightPos", animatedLightPos);
-        ourShader.setVec3("viewPos", camera.Position);
-        ourShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-        ourShader.setVec3("objectColor", glm::vec3(1.0f, 0.61f, 0.45f));
+        modelShader.setVec3("lightPos", animatedLightPos);
+        modelShader.setVec3("viewPos", camera.Position);
+        modelShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        modelShader.setVec3("objectColor", glm::vec3(1.0f, 0.61f, 0.45f));
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 5000.0f);
         glm::mat4 view = camera.GetViewMatrix();
-        ourShader.setMat4("projection", projection);
-        ourShader.setMat4("view", view);
+        modelShader.setMat4("projection", projection);
+        modelShader.setMat4("view", view);
 
         // render the loaded model
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -100.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-        ourShader.setMat4("model", model);
-        ourModel.Draw(ourShader);
+        modelShader.setMat4("model", model);
+        ourModel.Draw(modelShader);
 
         // also draw the lamp object
         lightCubeShader.use();
@@ -295,7 +238,6 @@ int main()
 
         // Apply the translation
         model = glm::translate(model, animatedLightPos);
-
         model = glm::scale(model, glm::vec3(0.01f));
         lightCubeShader.setMat4("model", model);
 
