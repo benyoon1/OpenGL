@@ -80,77 +80,19 @@ int main()
     stbi_set_flip_vertically_on_load(true);
 
     // configure global opengl state
-    // -----------------------------
     glEnable(GL_DEPTH_TEST);
 
-    Shader lightCubeShader("shaders/light_cube.vs", "shaders/light_cube.fs");
     // load models
-    // -----------
     Model ourModel("assets/gm-bigcity/gm_bigcity.obj");
 
     // build and compile shaders
-    // -------------------------
+    Shader lightCubeShader("shaders/light_cube.vs", "shaders/light_cube.fs");
     Shader modelShader("shaders/model_loading.vs", "shaders/model_loading.fs");
     Shader skyboxShader("shaders/skybox.vs", "shaders/skybox.fs");
 
-    float boxVertices[] = {
-        // positions
-        -1.0f, 1.0f, -1.0f,
-        -1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f, 1.0f, -1.0f,
-        -1.0f, 1.0f, -1.0f,
+    Cube lampCube;
 
-        -1.0f, -1.0f, 1.0f,
-        -1.0f, -1.0f, -1.0f,
-        -1.0f, 1.0f, -1.0f,
-        -1.0f, 1.0f, -1.0f,
-        -1.0f, 1.0f, 1.0f,
-        -1.0f, -1.0f, 1.0f,
-
-        1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-
-        -1.0f, -1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, -1.0f, 1.0f,
-        -1.0f, -1.0f, 1.0f,
-
-        -1.0f, 1.0f, -1.0f,
-        1.0f, 1.0f, -1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, -1.0f,
-
-        -1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f, 1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f, 1.0f,
-        1.0f, -1.0f, 1.0f};
-
-    unsigned int boxVBO;
-    glGenBuffers(1, &boxVBO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, boxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(boxVertices), boxVertices, GL_STATIC_DRAW);
-
-    unsigned int lightCubeVAO;
-    glGenVertexArrays(1, &lightCubeVAO);
-    glBindVertexArray(lightCubeVAO);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(0);
-
-    // Cube lampCube;
+    stbi_set_flip_vertically_on_load(false); // reset flip before loading skybox
     Skybox skybox;
 
     skyboxShader.use();
@@ -210,10 +152,7 @@ int main()
         model = glm::translate(model, animatedLightPos);
         model = glm::scale(model, glm::vec3(50.01f)); // hide the light source
         lightCubeShader.setMat4("model", model);
-        // lampCube.Draw();
-
-        glBindVertexArray(lightCubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        lampCube.Draw();
 
         // draw skybox as last
         glDepthFunc(GL_LEQUAL); // change depth function so depth test passes when values are equal to depth buffer's content
