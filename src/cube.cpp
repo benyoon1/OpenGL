@@ -1,4 +1,5 @@
 #include "cube.h"
+#include <iostream>
 
 Cube::Cube()
 {
@@ -12,4 +13,11 @@ Cube::Cube()
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
+}
+
+void Cube::Draw()
+{
+    glBindVertexArray(cubeVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);
 }

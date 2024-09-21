@@ -1,5 +1,5 @@
-#ifndef BOX_H
-#define BOX_H
+#ifndef CUBE_H
+#define CUBE_H
 
 #include <glad/glad.h>
 
@@ -53,6 +53,7 @@ public:
     unsigned int cubeVBO, cubeVAO;
 
     Cube();
+    void Draw();
 };
 
 #endif
