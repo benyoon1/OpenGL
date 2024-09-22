@@ -15,8 +15,17 @@ Cube::Cube()
     glEnableVertexAttribArray(0);
 }
 
-void Cube::Draw()
+void Cube::Draw(Shader &cubeShader, const glm::mat4 &projection,
+                const glm::mat4 &view, const Camera &camera, const glm::vec3 lightPos)
 {
+    cubeShader.use();
+    cubeShader.setMat4("projection", projection);
+    cubeShader.setMat4("view", view);
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, lightPos);      // Apply the translation
+    model = glm::scale(model, glm::vec3(50.01f)); // hide the light source
+    cubeShader.setMat4("model", model);
+
     glBindVertexArray(cubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);

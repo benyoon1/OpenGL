@@ -5,10 +5,25 @@ Model::Model(string const &path, bool gamma) : gammaCorrection(gamma)
     loadModel(FileSystem::getPath(path));
 }
 
-void Model::Draw(Shader &shader)
+void Model::Draw(Shader &modelShader, const glm::mat4 &projection,
+                 const glm::mat4 &view, const Camera &camera, const glm::vec3 lightPos)
 {
+    // render the loaded model
+    modelShader.use();
+    modelShader.setVec3("lightPos", lightPos);
+    modelShader.setVec3("viewPos", camera.Position);
+    modelShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+    modelShader.setVec3("objectColor", glm::vec3(1.0f, 0.61f, 0.45f));
+    modelShader.setMat4("projection", projection);
+    modelShader.setMat4("view", view);
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.0f, -100.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+    modelShader.setMat4("model", model);
+
     for (unsigned int i = 0; i < meshes.size(); i++)
-        meshes[i].Draw(shader);
+        meshes[i].Draw(modelShader);
 }
 
 void Model::loadModel(string const &path)

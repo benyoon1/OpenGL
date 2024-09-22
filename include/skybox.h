@@ -12,7 +12,8 @@ public:
     unsigned int skyboxVAO;
 
     Skybox();
-    void Draw();
+    void Draw(Shader &shader, const glm::mat4 &projection,
+              glm::mat4 &view, Camera &camera);
     unsigned int LoadCubemap(std::vector<std::string> faces);
 };
 

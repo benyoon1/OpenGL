@@ -2,6 +2,8 @@
 #define CUBE_H
 
 #include <glad/glad.h>
+#include "camera.h"
+#include "shader.h"
 
 static const float cubeVertices[] = {
     // positions
@@ -53,7 +55,8 @@ public:
     unsigned int cubeVBO, cubeVAO;
 
     Cube();
-    void Draw();
+    void Draw(Shader &shader, const glm::mat4 &projection,
+              const glm::mat4 &view, const Camera &camera, const glm::vec3 lightPos);
 };
 
 #endif

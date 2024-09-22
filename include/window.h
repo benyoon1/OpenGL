@@ -12,10 +12,10 @@ public:
 
     Window(const unsigned int m_uiWidth, const unsigned int m_uiHeight, Camera &camera);
 
-    void processInput();
+    void ProcessInput();
     void UpdateFrame();
-    unsigned int getWidth() const { return m_uiWidth; }
-    unsigned int getHeight() const { return m_uiHeight; }
+    unsigned int GetWidth() const { return m_uiWidth; }
+    unsigned int GetHeight() const { return m_uiHeight; }
 
 private:
     unsigned int m_uiWidth;

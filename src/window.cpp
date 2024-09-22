@@ -49,7 +49,7 @@ Window::Window(const unsigned int width, const unsigned int height, Camera &came
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void Window::processInput()
+void Window::ProcessInput()
 {
     if (glfwGetKey(m_glWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(m_glWindow, true);

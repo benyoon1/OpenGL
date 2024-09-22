@@ -1,11 +1,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "stb_image.h"
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "stb_image.h"
 #include "window.h"
 #include "shader.h"
 #include "camera.h"
@@ -39,9 +38,8 @@ int main()
     Shader modelShader("shaders/model_loading.vs", "shaders/model_loading.fs");
     Shader skyboxShader("shaders/skybox.vs", "shaders/skybox.fs");
 
-    // load models
+    // load objects
     Model ourModel("assets/gm-bigcity/gm_bigcity.obj");
-
     Cube lampCube;
 
     stbi_set_flip_vertically_on_load(false); // reset flip before loading skybox
@@ -54,7 +52,7 @@ int main()
     while (!glfwWindowShouldClose(window.m_glWindow))
     {
         window.UpdateFrame();
-        window.processInput();
+        window.ProcessInput();
 
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -65,47 +63,16 @@ int main()
         float Ydisplacement = cos(timeValue) * AMPLITUDE;
         glm::vec3 animatedLightPos = lightPos + glm::vec3(0.0f, Ydisplacement, Zdisplacement);
 
-        // render the loaded model
-        modelShader.use();
-        modelShader.setVec3("lightPos", animatedLightPos);
-        modelShader.setVec3("viewPos", camera.Position);
-        modelShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-        modelShader.setVec3("objectColor", glm::vec3(1.0f, 0.61f, 0.45f));
-
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 5000.0f);
         glm::mat4 view = camera.GetViewMatrix();
-        modelShader.setMat4("projection", projection);
-        modelShader.setMat4("view", view);
 
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -100.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-        modelShader.setMat4("model", model);
-        ourModel.Draw(modelShader);
+        // draw the objects
+        ourModel.Draw(modelShader, projection, view, camera, animatedLightPos);
+        lampCube.Draw(lightCubeShader, projection, view, camera, animatedLightPos);
+        skybox.Draw(skyboxShader, projection, view, camera); // draw skybox as last
 
-        // lamp object
-        lightCubeShader.use();
-        lightCubeShader.setMat4("projection", projection);
-        lightCubeShader.setMat4("view", view);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, animatedLightPos); // Apply the translation
-        model = glm::scale(model, glm::vec3(50.01f));    // hide the light source
-        lightCubeShader.setMat4("model", model);
-        lampCube.Draw();
-
-        // draw skybox as last
-        glDepthFunc(GL_LEQUAL); // change depth function so depth test passes when values are equal to depth buffer's content
-        skyboxShader.use();
-        view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
-        skyboxShader.setMat4("view", view);
-        skyboxShader.setMat4("projection", projection);
-        skybox.Draw();
-
-        glDepthFunc(GL_LESS); // set depth function back to default
-
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
+        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)s
         glfwSwapBuffers(window.m_glWindow);
         glfwPollEvents();
     }

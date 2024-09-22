@@ -11,6 +11,7 @@
 #include <mesh.h>
 #include <shader.h>
 #include <filesystem.h>
+#include "camera.h"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -31,7 +32,8 @@ public:
     bool gammaCorrection;
 
     Model(string const &path, bool gamma = false);
-    void Draw(Shader &shader);
+    void Draw(Shader &modelShader, const glm::mat4 &projection,
+              const glm::mat4 &view, const Camera &camera, const glm::vec3 lightPos);
 
 private:
     void loadModel(string const &path);
