@@ -3,6 +3,12 @@ project(opengl)
 
 set(CMAKE_CXX_STANDARD 17)
 
+# Check memory leak
+if(APPLE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+    set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fsanitize=address")
+endif()
+
 # Find the Assimp package
 find_package(assimp REQUIRED)
 find_package(glfw3 REQUIRED)

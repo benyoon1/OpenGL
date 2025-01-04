@@ -2,68 +2,69 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "cmake configure debug",
       "type": "shell",
-      "label": "cmake clean",
-      "command": "/opt/homebrew/bin/cmake",
-      "args": ["--build", "${workspaceFolder}/build", "--target", "clean"],
-      "options": {
-        "cwd": "${workspaceFolder}/build"
-      },
-      "problemMatcher": ["$gcc"],
-      "group": "build",
-      "detail": "CMake clean task"
-    },
-    {
-      "type": "shell",
-      "label": "cmake configure",
-      "command": "/opt/homebrew/bin/cmake",
+      "command": "cmake",
       "args": [
         "-DCMAKE_BUILD_TYPE=Debug",
         "-DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE",
-        "-DCMAKE_C_COMPILER=/usr/bin/clang",
-        "-DCMAKE_CXX_COMPILER=/usr/bin/clang++",
         "-S",
         "${workspaceFolder}",
         "-B",
-        "${workspaceFolder}/build",
+        "${workspaceFolder}/build/debug",
         "-G",
         "Ninja"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "problemMatcher": ["$gcc"],
-      "group": "build",
-      "detail": "CMake configure task"
+      ]
     },
     {
+      "label": "cmake configure release",
       "type": "shell",
-      "label": "cmake build",
-      "command": "/opt/homebrew/bin/cmake",
+      "command": "cmake",
       "args": [
-        "--build",
-        "${workspaceFolder}/build",
-        "--config",
-        "Debug",
-        "--target",
-        "all"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}/build"
-      },
-      "problemMatcher": ["$gcc"],
-      "group": "build",
-      "detail": "CMake build task"
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE",
+        "-S",
+        "${workspaceFolder}",
+        "-B",
+        "${workspaceFolder}/build/release",
+        "-G",
+        "Ninja"
+      ]
     },
     {
-      "label": "build",
-      "dependsOn": ["cmake clean", "cmake configure", "cmake build"],
-      "dependsOrder": "sequence",
+      "label": "build debug",
+      "type": "shell",
+      "command": "cmake",
+      "args": ["--build", "${workspaceFolder}/build/debug", "--target", "all"],
       "group": {
         "kind": "build",
         "isDefault": true
       },
-      "detail": "Full build process: clean, configure, and build"
+      "dependsOn": ["cmake configure debug"]
+    },
+    {
+      "label": "build release",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "${workspaceFolder}/build/release",
+        "--target",
+        "all"
+      ],
+      "dependsOn": ["cmake configure release"]
+    },
+    {
+      "label": "clean",
+      "type": "shell",
+      "command": "rm",
+      "args": ["-rf", "${workspaceFolder}/build"],
+      "problemMatcher": []
+    },
+    {
+      "label": "rebuild",
+      "dependsOn": ["clean", "build debug"],
+      "dependsOrder": "sequence"
     }
   ]
 }
