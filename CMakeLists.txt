@@ -1,58 +1,63 @@
-cmake_minimum_required(VERSION 3.10)
-project(opengl)
+cmake_minimum_required(VERSION 3.12)
+project(opengl LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Find the Assimp package
 find_package(assimp REQUIRED)
 find_package(glfw3 REQUIRED)
 
-if(glfw3_FOUND)
-message(STATUS "GLFW found")
-else()
-message(FATAL_ERROR "GLFW not found")
-endif()
-
-if(assimp_FOUND)
-message(STATUS "Assimp found") 
-else()
-message(FATAL_ERROR "Assimp not found")
-endif()
-
 set(GL_DEPS "${CMAKE_SOURCE_DIR}/dependencies")
 
-include_directories(${GL_DEPS}/glad/include 
-                    ${CMAKE_SOURCE_DIR}/include 
-                    ${CMAKE_BINARY_DIR}/configuration 
-                    ${ASSIMP_INCLUDE_DIRS})
+file(GLOB_RECURSE APP_SOURCES
+     CONFIGURE_DEPENDS
+     "${CMAKE_SOURCE_DIR}/src/*.cpp"
+     "${CMAKE_SOURCE_DIR}/src/*/*.cpp"
+)
 
-configure_file(configuration/root_directory.h.in configuration/root_directory.h)
+file(GLOB_RECURSE APP_HEADERS
+     CONFIGURE_DEPENDS
+     "${CMAKE_SOURCE_DIR}/include/*.h"
+     "${CMAKE_SOURCE_DIR}/include/*/*.h"
+)
 
-# Find all .cpp files in the src directory
-file(GLOB SRC_FILES src/*.cpp)
+add_executable(opengl
+    ${APP_SOURCES}
+    ${GL_DEPS}/glad/src/glad.c
+    ${GL_DEPS}/stb_image/src/stb_image.cpp
+)
 
-# Add executable
-add_executable(opengl ${SRC_FILES} ${GL_DEPS}/glad/src/glad.c)
+target_include_directories(opengl PRIVATE
+    ${GL_DEPS}/glad/include
+    ${GL_DEPS}/glm
+    ${GL_DEPS}/stb_image/include
+    ${CMAKE_SOURCE_DIR}/include
+    ${ASSIMP_INCLUDE_DIRS}
+)
+
+target_compile_definitions(opengl PRIVATE ROOT_PATH="${CMAKE_SOURCE_DIR}")
+
+target_compile_options(opengl PRIVATE -Wall -Wextra -Wpedantic)
 
 if(APPLE)
-        target_link_libraries(opengl
-                glfw
-                assimp::assimp
-                "-framework OpenGL"
-                "-framework Cocoa"
-                "-framework IOKit"
-                "-framework CoreVideo"
-)
+    target_link_libraries(opengl PRIVATE
+        glfw
+        assimp::assimp
+        "-framework OpenGL"
+        "-framework Cocoa"
+        "-framework IOKit"
+        "-framework CoreVideo"
+    )
 elseif(UNIX AND NOT APPLE)
-        target_link_libraries(opengl
-                glfw
-                assimp::assimp
-                GL
-                X11
-                pthread
-                Xrandr
-                Xi
-                dl
-        )
+    target_link_libraries(opengl PRIVATE
+        glfw
+        assimp
+        GL
+        X11
+        pthread
+        Xrandr
+        Xi
+        dl
+    )
 endif()
-
