@@ -1,4 +1,137 @@
-/cmake-build-debug/
-/build/
-/.idea/
+# Build directories
+build/
+builds/
+cmake-build-*/
+out/
+dist/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+_deps/
+
+# Ninja build files
+*.ninja
+.ninja_deps
+.ninja_log
+
+# Make build files
+Makefile
+
+# Compiled Object files
+*.o
+*.lo
+*.slo
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.so.*
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.a
+*.lib
+*.lai
+*.la
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# IDE files
+.vscode/
+.vs/
+.idea/
+*.swp
+*.swo
+*~
+.cache/
+
+# Qt Creator
+CMakeLists.txt.user
+CMakeLists.txt.user.*
+
+# Xcode
+*.xcodeproj/
+*.xcworkspace/
+
+# Conan
+conandata.yml
+conaninfo.txt
+conanbuildinfo.*
+conan.lock
+
+# vcpkg
+vcpkg_installed/
+
+# Package managers
+node_modules/
+.conan/
+
+# System files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.orig
+
+# Coverage files
+*.gcov
+*.gcno
+*.gcda
+lcov.info
+coverage/
+
+# Profiling
+*.prof
+gmon.out
+
+# Valgrind
+*.memcheck
+*.helgrind
+*.drd
+*.massif
+
+# Test results
+Testing/
+test_results/
+*.xml
+
+# Documentation generated files
+doc/html/
+doc/latex/
+docs/_build/
+
+# Environment variables
+.env
+.env.local
+
+# binary
+opengl
