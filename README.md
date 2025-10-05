@@ -65,3 +65,4 @@ build/opengl         # run executable
 - Add unit/integration tests
 - Integrate Dear ImGui
 - Procedural terrain generation
+- Dynamic weather system
