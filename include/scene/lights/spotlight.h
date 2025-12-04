@@ -17,7 +17,7 @@ public:
     static constexpr float kSpotFov{glm::radians(kOuterCutDeg * 2.0f)};
     static constexpr float kSpotNear{1.0f};
     static constexpr float kSpotFar{2000.0f};
-    static constexpr float kIntensity{200.0f};
+    static constexpr float kIntensity{100.0f};
     static constexpr glm::vec3 kSpotColor{1.0f, 0.98f, 0.90f};
 
     glm::mat4 getSpotLightSpaceMatrix() const { return m_spotLightSpace; }

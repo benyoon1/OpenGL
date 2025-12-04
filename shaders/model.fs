@@ -57,7 +57,7 @@ vec3 calcSpotlight(
 
     // Distance attenuation
     float dist = length(sPos - fragPos);
-    float attenuation = 1.0 / (1.0 + 0.01 * dist + 0.01 * dist * dist);
+    float attenuation = 1.0 / (1.0 + 0.7 * dist + 1.8 * dist * dist);
 
     return (diffuse + specular) * spot * attenuation * intensity;
 }
@@ -90,7 +90,6 @@ float calcShadow(vec4 fragPosLightSpace, sampler2D shadowMap, vec3 lightPos) {
     // transform to [0,1] range
     projCoords = projCoords * 0.5 + 0.5;
     // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-    float closestDepth = texture(shadowMap, projCoords.xy).r;
     // get depth of current fragment from light's perspective
     float currentDepth = projCoords.z;
     // calculate bias (based on depth map resolution and slope)

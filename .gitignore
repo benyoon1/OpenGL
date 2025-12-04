@@ -55,7 +55,6 @@ Makefile
 *.pdb
 
 # IDE files
-.vscode/
 .vs/
 .idea/
 *.swp

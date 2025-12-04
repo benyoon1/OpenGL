@@ -20,7 +20,7 @@ Model::Model(std::string const& path)
     // set valley model matrix (position/scale)
     m_modelMatrix = glm::mat4(1.0f);
     m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
-    m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3(30.0f, 30.0f, 30.0f));
+    m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3(1.0f, 1.0f, 1.0f));
 }
 
 Model::~Model()

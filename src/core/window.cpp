@@ -59,7 +59,7 @@ void Window::processInput(float& outSunSpeed, float& spotlightGain)
 
     if (glfwGetKey(m_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
     {
-        sprint = 10.0f;
+        sprint *= 3.0f;
     }
 
     // get WASD keys
