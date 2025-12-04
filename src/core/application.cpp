@@ -79,10 +79,10 @@ void Application::renderDepthPass()
     m_robotArm->drawShadowMap(*m_depthShader, m_sunLight.getLightSpaceMatrix());
     m_sunShadow->unbind();
 
-    // 2. spotlight depth pass
-    m_spotShadow->bind();
-    m_valley->drawShadowMap(*m_depthShader, m_spotlight.getSpotLightSpaceMatrix(), m_valley->getModelMatrix());
-    m_spotShadow->unbind();
+    // // 2. spotlight depth pass
+    // m_spotShadow->bind();
+    // m_valley->drawShadowMap(*m_depthShader, m_spotlight.getSpotLightSpaceMatrix(), m_valley->getModelMatrix());
+    // m_spotShadow->unbind();
 }
 
 void Application::renderMainPass()

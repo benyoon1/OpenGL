@@ -12,57 +12,66 @@ A simple OpenGL-based 3D rover explorer featuring hierarchical robot arm animati
 
 - Robot arm animation
 - Dynamic skybox (day/night cycle)
-    - Subtle lighting transitions at sunrise/sunset
 - Flashlight from robot arm
-- Shadow mapping (from the Sun and the flashlight)
+- Shadow mapping
 - OBJ model loading via Assimp
-- Simple camera controls (orbit, pan, zoom)
 - Phong lighting
+- Simple camera controls (orbit, pan, zoom)
 - Cross-platform build with CMake
 
 ## Controls
 
-- WASD: move camera
-- Mouse drag: pan camera
-- Scroll wheel: zoom
-- Mouse left click: turn on flashlight
-- Left Shift: run / speed boost while moving
-- Space: speed up Sun rotation
+| Key              | Description                          |
+| ---------------- | ------------------------------------ |
+| WASD             | Move camera                          |
+| Mouse drag       | Pan camera                           |
+| Mouse left click | Boost flashlight intensity           |
+| I / K            | Raise / lower the upper arm          |
+| U / J            | Raise / lower the lower arm          |
+| O / L            | Raise / lower the wrist (flashlight) |
+| Left Shift       | Run / speed boost while moving       |
+| Space            | Speed up Sun rotation                |
 
 ## Prerequisites:
 
-### MacOS
+- (Recommended) Install Visual Studio Code for development/building
+- Clone this repository:
+    ```sh
+    git clone https://github.com/benyoon1/OpenGL.git
+    ```
+
+### Platform-specific Dependencies
+
+#### MacOS
 
 - Install Homebrew
 - Install dependencies:
     ```sh
-    brew install glfw assimp
+    brew install glfw assimp git-lfs
+    git lfs install   # for obj assets
     ```
 
-### Debian/Ubuntu
+#### Linux (Ubuntu)
 
 - Install dependencies:
     ```sh
-       sudo apt-get update
-       sudo apt-get install libglfw3-dev libassimp-dev libgl1-mesa-dev libx11-dev libpthread-stubs0-dev libxrandr-dev libxi-dev
+    sudo apt update
+    sudo apt install -y \
+        libglfw3-dev \
+        libassimp-dev \
+        libgl1-mesa-dev \
+        libx11-dev \
+        libpthread-stubs0-dev \
+        libxrandr-dev \
+        libxi-dev \
+        git-lfs \
+        build-essential \
+        ninja-build
+    git lfs install
     ```
 
 ## Build & Run
 
-Run from project root:
-
-```sh
-./configure.sh       # generate build files via CMake
-./build.sh           # build
-build/opengl         # run executable
-```
-
-## Planned Work
-
-- Collision detection
-- Add stars at night
-- Make the Sun look more realistic
-- Add unit/integration tests
-- Integrate Dear ImGui
-- Procedural terrain generation
-- Dynamic weather system
+1. In VS Code, press `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Windows/Linux) to open the command palette.
+2. Type `Tasks: Run Task` and select it.
+3. Select `CMake: configure && build && run (Debug)` to generate build files via CMake, build, and run the executable in one step.
