@@ -63,6 +63,8 @@ void Application::run()
 {
     while (!glfwWindowShouldClose(m_window.getGlfwWindow()))
     {
+        // double frameStart = glfwGetTime();
+
         // update window and scene objects
         update();
 
@@ -74,7 +76,20 @@ void Application::run()
         renderMainPass();
         renderImGui();
 
+        double beforeSwap = glfwGetTime();
         glfwSwapBuffers(m_window.getGlfwWindow());
+        double afterSwap = glfwGetTime();
+
+        // Print occasionally to see where time is spent
+        // static int frameCount = 0;
+        // if (++frameCount % 300 == 0)
+        // {
+        //     printf("Render: %.2fms, Swap: %.2fms\n", (beforeSwap - frameStart) * 1000.0,
+        //            (afterSwap - beforeSwap) * 1000.0);
+        // }
+        m_swapTime = (afterSwap - beforeSwap) * 1000.0;
+
+        // glfwSwapBuffers(m_window.getGlfwWindow());
         glfwPollEvents();
     }
 }
@@ -150,6 +165,7 @@ void Application::renderImGui()
     ImGui::Text("sun speed: %.2f", m_sunSpeed);
     ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
     ImGui::Text("sun height: %.1f", glm::normalize(m_sunLight.getSunPosition()).y);
+    ImGui::Text("swap time: %.2f ms", m_swapTime);
     ImGui::End();
 
     ImGui::SetNextWindowPos(ImVec2(289, 19), ImGuiCond_FirstUseEver);

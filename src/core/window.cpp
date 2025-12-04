@@ -26,8 +26,8 @@ Window::Window() : m_lastX(kScreenWidth / 2.0f), m_lastY(kScreenHeight / 2.0f)
         throw std::runtime_error("Failed to create GLFW window");
     }
     glfwMakeContextCurrent(m_window);
-    // enable VSync
-    glfwSwapInterval(1);
+    // glfwSwapInterval(1);                      // Enable vsync
+    glfwSwapInterval(0);                      // Disable vsync
     glfwSetWindowUserPointer(m_window, this); // Set the user pointer to the instance
 
     glfwSetFramebufferSizeCallback(m_window, framebufferSizeCallback);

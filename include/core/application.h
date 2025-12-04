@@ -31,6 +31,7 @@ private:
     Spotlight m_spotlight;
     float m_sunSpeed{0.1f};
     float m_spotlightGain{1.0f};
+    double m_swapTime{0.0};
 
     // GL-dependent resources are deferred
     std::unique_ptr<RobotArm> m_robotArm;
