@@ -16,11 +16,13 @@ class Application
 {
 public:
     Application();
+    ~Application();
 
     void run();
     void update();
     void renderDepthPass();
     void renderMainPass();
+    void renderImGui();
 
 private:
     Window m_window;

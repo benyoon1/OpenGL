@@ -6,9 +6,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <stb_image.h>
 
-#include "core/application.h"
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
-#include <iostream>
+#include "core/application.h"
 // clang-format on
 
 Application::Application() : m_window(), m_camera(), m_sunLight(), m_spotlight()
@@ -19,6 +21,19 @@ Application::Application() : m_window(), m_camera(), m_sunLight(), m_spotlight()
         throw std::runtime_error("Failed to initialize GLAD");
     }
     glEnable(GL_DEPTH_TEST);
+
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(m_window.getGlfwWindow(), true);
+    ImGui_ImplOpenGL3_Init("#version 330");
 
     // construct GL-dependent resources AFTER GLAD
     m_robotArm = std::make_unique<RobotArm>("assets/robot_arm/wrist.obj", "assets/robot_arm/lower_arm.obj",
@@ -37,6 +52,13 @@ Application::Application() : m_window(), m_camera(), m_sunLight(), m_spotlight()
     m_depthShader = std::make_unique<Shader>("shaders/shadowMapping.vs", "shaders/shadowMapping.fs");
 }
 
+Application::~Application()
+{
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+}
+
 void Application::run()
 {
     while (!glfwWindowShouldClose(m_window.getGlfwWindow()))
@@ -50,6 +72,7 @@ void Application::run()
 
         renderDepthPass();
         renderMainPass();
+        renderImGui();
 
         glfwSwapBuffers(m_window.getGlfwWindow());
         glfwPollEvents();
@@ -108,4 +131,57 @@ void Application::renderMainPass()
     m_robotArm->draw(*m_modelShader, projection, m_camera, m_sunLight.getSunPosition(), m_robotArm->getSpotlightPos());
 
     m_skybox->draw(*m_skyboxShader, projection, m_camera, m_sunLight.getSunDirection(), glm::vec2(width, height));
+}
+
+void Application::renderImGui()
+{
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::SetNextWindowPos(ImVec2(15, 18), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(261, 190), ImGuiCond_FirstUseEver);
+    ImGui::Begin("Stats");
+
+    // ImGui::Text("frametime %f ms", stats.frametime);
+    // ImGui::Text("drawtime %f ms", stats.mesh_draw_time);
+    // ImGui::Text("triangles %i", stats.triangle_count);
+    // ImGui::Text("draws %i", stats.drawcall_count);
+    ImGui::Text("sun speed: %.2f", m_sunSpeed);
+    ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+    ImGui::Text("sun height: %.1f", glm::normalize(m_sunLight.getSunPosition()).y);
+    ImGui::End();
+
+    ImGui::SetNextWindowPos(ImVec2(289, 19), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(411, 190), ImGuiCond_FirstUseEver);
+    ImGui::Begin("Controls");
+    if (ImGui::BeginTable("controls_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+    {
+        ImGui::TableSetupColumn("Key", ImGuiTableColumnFlags_WidthStretch, 0.3f);
+        ImGui::TableSetupColumn("Description", ImGuiTableColumnFlags_WidthStretch, 0.7f);
+        ImGui::TableHeadersRow();
+        const std::array<std::pair<const char*, const char*>, 8> controls = {{
+            {"WASD", "Move camera"},
+            {"Mouse drag", "Pan camera"},
+            {"Mouse left click", "Boost flashlight intensity"},
+            {"I / K", "Raise / lower the upper arm"},
+            {"U / J", "Raise / lower the lower arm"},
+            {"O / L", "Raise / lower the wrist (flashlight)"},
+            {"Left Shift", "Run / speed boost while moving"},
+            {"Space", "Speed up Sun rotation"},
+        }};
+        for (const auto& [key, desc] : controls)
+        {
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::TextUnformatted(key);
+            ImGui::TableNextColumn();
+            ImGui::TextUnformatted(desc);
+        }
+        ImGui::EndTable();
+    }
+    ImGui::End();
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
