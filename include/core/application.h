@@ -11,6 +11,7 @@
 #include "scene/robotArm.h"
 #include "scene/skybox.h"
 #include "scene/sphere.h"
+#include <memory>
 
 class Application
 {

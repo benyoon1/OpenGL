@@ -10,6 +10,9 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include <stdexcept>
+#include <array>
+
 #include "core/application.h"
 // clang-format on
 

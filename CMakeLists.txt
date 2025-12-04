@@ -41,6 +41,7 @@ add_executable(opengl
 target_include_directories(opengl PRIVATE
     ${GL_DEPS}/glad/include
     ${GL_DEPS}/glm
+    ${GL_DEPS}
     ${GL_DEPS}/stb_image/include
     ${GL_DEPS}/imgui
     ${CMAKE_SOURCE_DIR}/include
