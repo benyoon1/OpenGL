@@ -12,6 +12,7 @@
 
 #include <stdexcept>
 #include <array>
+#include <chrono>
 
 #include "core/application.h"
 // clang-format on
@@ -66,6 +67,21 @@ void Application::run()
 {
     while (!glfwWindowShouldClose(m_window.getGlfwWindow()))
     {
+        auto currFrameTime = std::chrono::high_resolution_clock::now();
+        if (m_fpsFrameCount == 0 && m_fpsWindowStart.time_since_epoch().count() == 0)
+        {
+            m_fpsWindowStart = currFrameTime;
+        }
+        m_fpsFrameCount++;
+
+        float elapsedSec = std::chrono::duration<float>(currFrameTime - m_fpsWindowStart).count();
+        if (elapsedSec >= 5.0f)
+        {
+            m_avgFps = static_cast<float>(m_fpsFrameCount) / elapsedSec;
+            m_fpsFrameCount = 0;
+            m_fpsWindowStart = currFrameTime;
+        }
+
         // double frameStart = glfwGetTime();
 
         // update window and scene objects
@@ -166,8 +182,9 @@ void Application::renderImGui()
     // ImGui::Text("drawtime %f ms", stats.mesh_draw_time);
     // ImGui::Text("triangles %i", stats.triangle_count);
     // ImGui::Text("draws %i", stats.drawcall_count);
-    ImGui::Text("sun speed: %.2f", m_sunSpeed);
     ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+    ImGui::Text("avg FPS (5s): %.1f", m_avgFps);
+    ImGui::Text("sun speed: %.2f", m_sunSpeed);
     ImGui::Text("sun height: %.1f", glm::normalize(m_sunLight.getSunPosition()).y);
     ImGui::Text("swap time: %.2f ms", m_swapTime);
     ImGui::End();
