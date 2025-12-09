@@ -27,8 +27,8 @@ public:
     void setWristAngle(float deg) { m_wristAngle = deg; }
 
     void configureShader(Shader& shader) const;
-    void draw(Shader& shader, const glm::mat4& projection, const Camera& camera, const glm::vec3 sunPos,
-              const glm::vec3 spotlightPos);
+    void draw(Shader& shader, const glm::mat4& projection, const glm::mat4& view, const Camera& camera,
+              const glm::vec3 sunPos, const glm::vec3 spotlightPos);
     void drawShadowMap(Shader& depthShader, const glm::mat4& lightSpaceMatrix);
     glm::vec3 getSpotlightPos() const { return m_spotlightPos; }
     glm::vec3 getSpotlightDir() const { return m_spotlightDir; }

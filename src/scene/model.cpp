@@ -57,6 +57,8 @@ void Model::configureShader(Shader& shader, const Camera& camera, const Directio
     shader.setFloat("spotOuterCutoff", glm::cos(glm::radians(Spotlight::kOuterCutDeg)));
     shader.setFloat("spotIntensity", Spotlight::kIntensity * spotlightGain);
 
+    shader.setInt("receiveShadow", 1);
+
     // orange tint to valley model
     shader.setVec3("objectColor", Model::kValleyTint);
 }

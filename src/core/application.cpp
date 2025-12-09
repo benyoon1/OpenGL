@@ -146,7 +146,8 @@ void Application::renderMainPass()
                    m_robotArm->getSpotlightPos());
 
     m_robotArm->configureShader(*m_modelShader);
-    m_robotArm->draw(*m_modelShader, projection, m_camera, m_sunLight.getSunPosition(), m_robotArm->getSpotlightPos());
+    m_robotArm->draw(*m_modelShader, projection, view, m_camera, m_sunLight.getSunPosition(),
+                     m_robotArm->getSpotlightPos());
 
     m_skybox->draw(*m_skyboxShader, projection, m_camera, m_sunLight.getSunDirection(), glm::vec2(width, height));
 }

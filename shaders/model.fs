@@ -19,6 +19,9 @@ uniform sampler2D spotlightShadowMapTextureNum;
 uniform vec3 sunPos;
 uniform vec3 sunColor;
 
+// TODO: temporary fix shadow control
+uniform int receiveShadow;
+
 // spotlight
 uniform int spotEnabled;
 uniform vec3 spotlightPos;
@@ -122,8 +125,12 @@ void main() {
 
     vec3 viewDir = normalize(viewPos - FragPos);
 
-    float sunShadow = calcShadow(FragPosSunLightSpace, sunShadowMapTextureNum, sunPos);
-    float spotlightShadow = calcShadow(FragPosSpotLightSpace, spotlightShadowMapTextureNum, spotlightPos);
+    float sunShadow = 0.0;
+    float spotlightShadow = 0.0;
+    if (receiveShadow == 1) {
+        sunShadow = calcShadow(FragPosSunLightSpace, sunShadowMapTextureNum, sunPos);
+        spotlightShadow = calcShadow(FragPosSpotLightSpace, spotlightShadowMapTextureNum, spotlightPos);
+    }
 
     float ambientStrength = 0.1;
     vec3 ambient = ambientStrength * vec3(0.8, 0.85, 0.95);

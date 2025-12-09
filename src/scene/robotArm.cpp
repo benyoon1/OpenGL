@@ -12,22 +12,24 @@ RobotArm::RobotArm(const std::string& wristPath, const std::string& lowerArmPath
 void RobotArm::configureShader(Shader& shader) const
 {
     shader.setVec3("objectColor", glm::vec3(1.0f));
+    shader.setInt("receiveShadow", 0);
 }
 
-void RobotArm::draw(Shader& shader, const glm::mat4& projection, const Camera& camera, const glm::vec3 sunPos,
-                    const glm::vec3 spotlightPos)
+void RobotArm::draw(Shader& shader, const glm::mat4& projection, const glm::mat4& view, const Camera& camera,
+                    const glm::vec3 sunPos, const glm::vec3 spotlightPos)
 {
     shader.use();
     shader.setMat4("projection", projection);
+    glm::mat4 camWorld = glm::inverse(view); // camera's world transform
 
-    shader.setMat4("model", m_upperArmModel);
-    m_upperArm.draw(shader, projection, glm::mat4(1.0f), camera, sunPos, spotlightPos);
+    shader.setMat4("model", camWorld * m_upperArmModel);
+    m_upperArm.draw(shader, projection, view, camera, sunPos, spotlightPos);
 
-    shader.setMat4("model", m_lowerArmModel);
-    m_lowerArm.draw(shader, projection, glm::mat4(1.0f), camera, sunPos, spotlightPos);
+    shader.setMat4("model", camWorld * m_lowerArmModel);
+    m_lowerArm.draw(shader, projection, view, camera, sunPos, spotlightPos);
 
-    shader.setMat4("model", m_wristModel);
-    m_wrist.draw(shader, projection, glm::mat4(1.0f), camera, sunPos, spotlightPos);
+    shader.setMat4("model", camWorld * m_wristModel);
+    m_wrist.draw(shader, projection, view, camera, sunPos, spotlightPos);
 }
 
 void RobotArm::drawShadowMap(Shader& depthShader, const glm::mat4& lightSpaceMatrix)
