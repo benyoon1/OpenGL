@@ -9,7 +9,7 @@
                 "-S",
                 ".",
                 "-B",
-                "build",
+                "build/Debug",
                 "-DCMAKE_BUILD_TYPE=Debug",
                 "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
                 "-G",
@@ -21,12 +21,12 @@
             "label": "CMake: build (Debug)",
             "type": "shell",
             "command": "cmake",
-            "args": ["--build", "build", "--parallel"],
+            "args": ["--build", "build/Debug", "--parallel"],
             "problemMatcher": []
         },
         {
             "label": "CMake: configure && build && run (Debug)",
-            "dependsOn": ["CMake: configure (Debug)", "CMake: build (Debug)", "Run: opengl"],
+            "dependsOn": ["CMake: configure (Debug)", "CMake: build (Debug)", "Run: opengl (Debug)"],
             "dependsOrder": "sequence",
             "problemMatcher": []
         },
@@ -34,7 +34,7 @@
             "label": "CMake: clean",
             "type": "shell",
             "command": "cmake",
-            "args": ["--build", "build", "--target", "clean"],
+            "args": ["--build", "build/Debug", "--target", "clean"],
             "problemMatcher": []
         },
         {
@@ -45,7 +45,7 @@
                 "-S",
                 ".",
                 "-B",
-                "build-release",
+                "build/Release",
                 "-DCMAKE_BUILD_TYPE=Release",
                 "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
                 "-G",
@@ -57,22 +57,40 @@
             "label": "CMake: build (Release)",
             "type": "shell",
             "command": "cmake",
-            "args": ["--build", "build-release", "--parallel"],
+            "args": ["--build", "build/Release", "--parallel"],
             "problemMatcher": []
         },
         {
             "label": "CMake: configure && build && run (Release)",
-            "dependsOn": ["CMake: configure (Release)", "CMake: build (Release)", "Run: opengl"],
+            "dependsOn": ["CMake: configure (Release)", "CMake: build (Release)", "Run: opengl (Release)"],
             "dependsOrder": "sequence",
             "problemMatcher": []
         },
         {
-            "label": "Run: opengl",
+            "label": "Run: opengl (Debug)",
             "type": "shell",
-            "command": "${workspaceFolder}/build/opengl",
+            "command": "${workspaceFolder}/build/Debug/opengl",
             "args": [],
             "options": {
-                "cwd": "${workspaceFolder}/build"
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": false
+            }
+        },
+        {
+            "label": "Run: opengl (Release)",
+            "type": "shell",
+            "command": "${workspaceFolder}/build/Release/opengl",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [],
             "presentation": {
