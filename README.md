@@ -34,13 +34,7 @@ A simple OpenGL-based 3D rover explorer featuring hierarchical robot arm animati
 
 ## Prerequisites:
 
-- (Recommended) Install Visual Studio Code for development/building
-- Clone this repository:
-    ```sh
-    git clone https://github.com/benyoon1/OpenGL.git
-    ```
-
-### Platform-specific Dependencies
+First, install the dependencies based on your operating system.
 
 #### MacOS
 
@@ -68,6 +62,16 @@ A simple OpenGL-based 3D rover explorer featuring hierarchical robot arm animati
         build-essential \
         ninja-build
     git lfs install
+    ```
+
+### General
+
+- (Recommended) Install Visual Studio Code for development/building
+- Clone this repository:
+
+    ```sh
+    # make sure you have git lfs first
+    git clone https://github.com/benyoon1/OpenGL.git
     ```
 
 ## Build & Run
